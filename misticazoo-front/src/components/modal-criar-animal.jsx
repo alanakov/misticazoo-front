@@ -3,9 +3,8 @@ import { Modal, Form, Input, Button, Select, InputNumber, notification, Row, Col
 import axios from 'axios';
 
 const ModalCriarAnimal = ({ isModalVisible, handleCloseModal }) => {
-  const [categorias, setCategorias] = useState([]);  // Estado para armazenar as categorias
+  const [categorias, setCategorias] = useState([]);  
 
-  // Função para buscar as categorias
   useEffect(() => {
     axios.get('http://localhost:8080/api/categorias')
       .then(response => {
@@ -31,7 +30,7 @@ const ModalCriarAnimal = ({ isModalVisible, handleCloseModal }) => {
         handleCloseModal(); // Fecha o modal após o envio
       })
       .catch(error => {
-        console.error('Erro ao cadastrar o animal:', error.response); // Verifica a resposta do erro
+        console.error('Erro ao cadastrar o animal:', error.response); 
         notification.error({
           message: 'Erro',
           description: `Não foi possível cadastrar o animal: ${error.response ? error.response.data : 'Erro desconhecido'}`,
@@ -120,7 +119,6 @@ const ModalCriarAnimal = ({ isModalVisible, handleCloseModal }) => {
           </Select>
         </Form.Item>
 
-        {/* Campos de Preço e Estoque lado a lado */}
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
