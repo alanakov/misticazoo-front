@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Row, Col, Modal, notification } from 'antd';
 import axios from 'axios';
 import Titulo from './titulo';
-import CardAnimalCategoria from './card-animal-categoria'; // Importando o componente da mesma pasta
+import CardAnimalCategoria from './card-animal-categoria';
 import ModalEditarAnimal from './modal-editar-animal';
 
 export default function Categoria() {
@@ -48,13 +48,13 @@ export default function Categoria() {
   const handleCardClick = (item) => {
     setSelectedItem(item);
     setIsModalVisible(true);
-    setIsEditing(false); // Não está editando
+    setIsEditing(false); 
   };
 
   const handleEditClick = (item) => {
     setSelectedItem(item);
     setIsModalVisible(true);
-    setIsEditing(true); // Está editando
+    setIsEditing(true); 
   };
 
   const handleDeleteClick = (itemId) => {

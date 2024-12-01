@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import Titulo from '../titulo';
 
 export default function Moedas() {
-    const [valorReal, setValorReal] = useState(); // Estado para o valor em Reais (formatado)
-    const [valorNexum, setValorNexum] = useState(); // Estado para o valor em Nexum
+    const [valorReal, setValorReal] = useState();
+    const [valorNexum, setValorNexum] = useState(); 
 
-    // Formata o valor como moeda BRL
     const formatarMoeda = (valor) => {
         return new Intl.NumberFormat('pt-BR', {
             style: 'currency',
@@ -16,7 +15,6 @@ export default function Moedas() {
     const handleNexumChange = (e) => {
         const nexum = e.target.value;
 
-        // Validação para não aceitar valores negativos ou campos vazios
         if (nexum < 0 || nexum === '') {
             setValorReal('0,00');
             setValorNexum('');
@@ -25,7 +23,7 @@ export default function Moedas() {
 
         setValorNexum(nexum);
         const reais = nexum * 678;
-        setValorReal(formatarMoeda(reais)); // Atualiza o valor formatado
+        setValorReal(formatarMoeda(reais)); 
     };
 
     return (
