@@ -21,20 +21,27 @@ const ItemCards = () => {
   
 
   return (
-    <Row gutter={[16, 16]} justify="center mt-8">
+    <div className='flex justify-center mx-10'>
+    <Row gutter={[16, 16]} style={{ maxWidth: '1200px'}}>
       {itens.map((item) => (
-        <Col xs={24} sm={12} md={8} lg={6} key={item.idItem}>
+        <Col lg={8} key={item.idItem}>
           <Card
             hoverable
             style={{ width: 340 }}
-            cover={<img alt={item.nome} src={item.imagemUrl} style={{ height: 200, objectFit: 'cover' }} />}
+            cover={
+              <img 
+                alt={`Imagem do(a) ${item.nome}`} 
+                src={item.imagemUrl} 
+                style={{ height: 200, objectFit: 'cover' }} 
+              />
+            }
           >
             <Meta
               title={<span style={{ fontFamily: 'Arial', fontWeight: 600, fontSize: 18 }}>{item.nome}</span>}
               description={
                 <span className='flex items-center'>
                   <RiCopperCoinFill className='mt-1' /> 
-                  R$ {item.preco}
+                  {item.preco}
                 </span>
               }
             />
@@ -42,6 +49,7 @@ const ItemCards = () => {
         </Col>
       ))}
     </Row>
+    </div>
   );
 };
 

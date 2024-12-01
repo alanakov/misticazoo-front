@@ -1,31 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
+import CardColecao from './card-colecao';
+import Titulo from '../titulo';
+import { GoArrowUpRight } from 'react-icons/go';
+import { useNavigate } from 'react-router-dom';
 
 export default function Colecao() {
   const [categorias, setCategorias] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  // Usar useEffect para carregar as categorias da API quando o componente é montado
   useEffect(() => {
-    // Requisição para a API
     axios.get('http://localhost:8080/api/categorias')
       .then((response) => {
-        // Supondo que o backend retorne um array de categorias
         setCategorias(response.data);
-        setLoading(false);
       })
       .catch((err) => {
         console.error('Erro ao carregar as categorias:', err);
         setError('Erro ao carregar as categorias');
-        setLoading(false);
       });
   }, []);
-
-  if (loading) {
-    return <div>Carregando categorias...</div>;
-  }
 
   if (error) {
     return <div>{error}</div>;
@@ -33,13 +27,21 @@ export default function Colecao() {
 
   return (
     <div>
+      <Titulo t1={"Conheça nossa"} t2={"coleção"} className='my-32' />
+    <div className="flex justify-center space-x-14 my-24">
+
       {categorias.map((categoria) => (
-        <div key={categoria.idCategoria}>
-          <Link to={`/categoria/${categoria.idCategoria}`}>
-            <div>{categoria.nome}</div>
-          </Link>
-        </div>
+        <CardColecao className='hover:scale-110'
+          key={categoria.idCategoria}
+          idCategoria={categoria.idCategoria}
+          nomeColecao={categoria.nome}
+          imagem={categoria.imagemUrl}
+        />
       ))}
+    </div>
+    <div className='flex justify-center mb-24'>
+                <button className='bg-gradient-to-l from-[#2600FC] to-[#FF00EA] text-white px-6 py-4 flex rounded-3xl font-medium' onClick={() => navigate('/animais')}>Explorar toda coleção <GoArrowUpRight /></button>
+            </div>
     </div>
   );
 }
