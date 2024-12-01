@@ -40,8 +40,8 @@ export default function Colecao() {
       ))}
     </div>
     <div className='flex justify-center mb-24'>
-                <button className='bg-gradient-to-l from-[#2600FC] to-[#FF00EA] text-white px-6 py-4 flex rounded-3xl font-medium' onClick={() => navigate('/animais')}>Explorar toda coleção <GoArrowUpRight /></button>
-            </div>
+      <button className='bg-gradient-to-l from-[#2600FC] to-[#FF00EA] text-white px-6 py-4 flex rounded-3xl font-medium' onClick={() => navigate('/animais')}>Explorar toda coleção <GoArrowUpRight /></button>
+    </div>
     </div>
   );
 }
