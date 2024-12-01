@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react'; 
 import { useParams } from 'react-router-dom'; 
-import { Row, Col, Modal } from 'antd';
+import { Row, Col, Modal, notification } from 'antd';
 import axios from 'axios';
 import Titulo from './titulo';
-import CardAnimalCategoria from './card-animal-categoria';
+import CardAnimalCategoria from './card-animal-categoria'; // Importando o componente da mesma pasta
+import ModalEditarAnimal from './modal-editar-animal';
 
 export default function Categoria() {
   const { idCategoria } = useParams(); 
   const [itens, setItens] = useState([]);
   const [categoria, setCategoria] = useState(null);
   const [error, setError] = useState(null);
-  
-  // Estado para Modal
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); 
 
   useEffect(() => {
     if (!idCategoria) {
@@ -44,16 +45,65 @@ export default function Categoria() {
     return <div>{error}</div>;
   }
 
-  // Função para abrir o Modal
   const handleCardClick = (item) => {
     setSelectedItem(item);
     setIsModalVisible(true);
+    setIsEditing(false); // Não está editando
   };
 
-  // Função para fechar o Modal
+  const handleEditClick = (item) => {
+    setSelectedItem(item);
+    setIsModalVisible(true);
+    setIsEditing(true); // Está editando
+  };
+
+  const handleDeleteClick = (itemId) => {
+    axios.delete(`http://localhost:8080/api/itens/${itemId}`)
+      .then(response => {
+        setItens(itens.filter(item => item.idItem !== itemId)); 
+        notification.success({
+          message: 'Sucesso',
+          description: 'Animal excluído com sucesso!',
+        });
+      })
+      .catch(error => {
+        console.error('Erro ao excluir o item:', error);
+        notification.error({
+          message: 'Erro',
+          description: 'Não foi possível excluir o animal!',
+        });
+      });
+  };
+
   const handleCloseModal = () => {
     setIsModalVisible(false);
     setSelectedItem(null);
+    setIsEditing(false);
+  };
+
+  const handleSaveChanges = (updatedItem) => {
+    const request = isEditing 
+      ? axios.put(`http://localhost:8080/api/itens/${selectedItem.idItem}`, updatedItem)
+      : axios.post('http://localhost:8080/api/itens', updatedItem);
+
+    request.then(response => {
+      setItens(prevItens => isEditing 
+        ? prevItens.map(item => (item.idItem === selectedItem.idItem ? response.data : item))
+        : [...prevItens, response.data]);
+
+      notification.success({
+        message: 'Sucesso',
+        description: isEditing ? 'Animal editado com sucesso!' : 'Animal cadastrado com sucesso!',
+      });
+      handleCloseModal();
+    })
+    .catch(error => {
+      console.error('Erro ao cadastrar ou editar o animal:', error);
+      notification.error({
+        message: 'Erro',
+        description: `Não foi possível ${isEditing ? 'editar' : 'cadastrar'} o animal.`,
+      });
+    });
   };
 
   return (
@@ -62,34 +112,26 @@ export default function Categoria() {
       <Row gutter={[16, 16]} style={{ maxWidth: '1200px' }}>
         {itens.map((item) => (
           <Col lg={8} key={item.idItem}>
-            <CardAnimalCategoria 
+            <CardAnimalCategoria
               nome={item.nome} 
               preco={item.preco} 
               imagemUrl={item.imagemUrl} 
-              onClick={() => handleCardClick(item)} // Pass item details on click
+              onClick={() => handleCardClick(item)} 
+              onEdit={() => handleEditClick(item)}
+              onDelete={() => handleDeleteClick(item.idItem)} 
             />
           </Col>
         ))}
       </Row>
 
-      {/* Modal */}
       {selectedItem && (
-        <Modal
-          title={selectedItem.nome}
-          visible={isModalVisible}
-          onCancel={handleCloseModal}
-          footer={null}
-        >
-          <img 
-            src={selectedItem.imagemUrl} 
-            alt={selectedItem.nome} 
-            style={{ width: '100%', borderRadius: '8px', marginBottom: 10 }}
-          />
-          <p><strong>Descrição:</strong> {selectedItem.descricao}</p>
-          <p><strong>Características:</strong> {selectedItem.caracteristicas}</p>
-          <p><strong>Cuidados:</strong> {selectedItem.cuidados}</p>
-          
-        </Modal>
+        <ModalEditarAnimal
+          visible={isModalVisible} 
+          onCancel={handleCloseModal} 
+          onSave={handleSaveChanges} 
+          item={selectedItem} 
+          isEditing={isEditing}
+        />
       )}
     </div>
   );
